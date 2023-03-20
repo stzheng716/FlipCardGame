@@ -3,17 +3,32 @@
 /** Memory game: find matching pairs of cards and flip both of them. */
 
 const FOUND_MATCH_WAIT_MSECS = 1000;
-const COLORS = [
-  "red", "blue", "green", "orange", "purple",
-  "red", "blue", "green", "orange", "purple",
-];
+// const COLORS = [
+//   "red", "blue", "green", "orange", "purple", "black", "yellow"
+// ];
 
-const colors = shuffle(COLORS);
+function randomRGB(){
+  const r = Math.floor(Math.random() * 256)
+  const g = Math.floor(Math.random() * 256)
+  const b = Math.floor(Math.random() * 256)
+  return `rgb(${r},${g},${b})`
+}
+
+const numOfCards = 15;
+
+const newDeck = [];
+for(let i = 0; i < numOfCards; i++){
+  let randomColor = randomRGB()
+  newDeck.push(randomColor, randomColor)
+}
+
+const colors = shuffle(newDeck);
 
 const startBtn = document.querySelector("#start");
 startBtn.addEventListener("click", function () {
   createCards(colors);
   //added this so that start couldn't be called multiple times
+  gameOverMsg.remove()
   this.remove()
 })
 
@@ -28,6 +43,7 @@ const gameBoard = document.getElementById("game");
 
 let SCORE = 0;
 let MATCHES = 0;
+let gameOverMsg = document.createElement("p")
 const score = document.querySelector("h2");
 
 
@@ -113,13 +129,12 @@ function cardReset() {
 
 function matches() {
   MATCHES += 2
-  if (MATCHES === COLORS.length) {
+  if (MATCHES === newDeck.length) {
     body.append(resetBtn)
     let bestScore = localStorage.getItem("Best Score")
     if (SCORE < bestScore || bestScore === null) {
       localStorage.setItem("Best Score", SCORE)
     }
-    let gameOverMsg = document.createElement("p")
     gameOverMsg.innerText = `Your score was ${SCORE}, the lowest Score was ${bestScore}`
     body.append(gameOverMsg)
   }
