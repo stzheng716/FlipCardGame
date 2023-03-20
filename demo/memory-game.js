@@ -65,9 +65,9 @@ function createCards(colors) {
     card.classList.add(color)
     gameBoard.append(card)
     card.addEventListener("click", function (evt) {
-      if (FIRSTCARD === undefined && SECONDCARD === undefined) {
+      if (FIRSTCARD === undefined && SECONDCARD === undefined && !card.className.includes('flipped')) {
         FIRSTCARD = handleCardClick(evt)
-      } else if (SECONDCARD === undefined && FIRSTCARD !== card) {
+      } else if (SECONDCARD === undefined && FIRSTCARD !== card && !card.className.includes('flipped')) {
         SECONDCARD = handleCardClick(evt)
         if (FIRSTCARD.className !== SECONDCARD.className) {
           setTimeout(() => {
@@ -88,11 +88,13 @@ function createCards(colors) {
 function flipCard(card) {
   score.innerText = ++SCORE;
   card.style.backgroundColor = card.className;
+  card.classList.toggle('flipped')
 }
 
 /** Flip a card face-down. */
 
 function unFlipCard(card) {
+  card.classList.toggle('flipped')
   card.style.backgroundColor = 'white'
 }
 
@@ -112,8 +114,14 @@ function cardReset() {
 function matches() {
   MATCHES += 2
   if (MATCHES === COLORS.length) {
-    console.log("you win!")
     body.append(resetBtn)
+    let bestScore = localStorage.getItem("Best Score")
+    if (SCORE < bestScore || bestScore === null) {
+      localStorage.setItem("Best Score", SCORE)
+    }
+    let gameOverMsg = document.createElement("p")
+    gameOverMsg.innerText = `Your score was ${SCORE}, the lowest Score was ${bestScore}`
+    body.append(gameOverMsg)
   }
   cardReset()
 }
