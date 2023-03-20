@@ -10,7 +10,27 @@ const COLORS = [
 
 const colors = shuffle(COLORS);
 
-createCards(colors);
+const startBtn = document.querySelector("#start");
+startBtn.addEventListener("click", function () {
+  createCards(colors);
+  //added this so that start couldn't be called multiple times
+  this.remove()
+})
+
+const resetBtn = document.createElement("button");
+resetBtn.innerText = "RESET"
+resetBtn.addEventListener("click", function () {
+  reset();
+})
+
+const body = document.querySelector("body");
+const gameBoard = document.getElementById("game");
+
+let SCORE = 0;
+let MATCHES = 0;
+const score = document.querySelector("h2");
+
+
 
 
 /** Shuffle array items in-place and return shuffled array. */
@@ -37,42 +57,36 @@ function shuffle(items) {
  * - a click event listener for each card to handleCardClick
  */
 
+let FIRSTCARD, SECONDCARD;
 
 function createCards(colors) {
-  let firstCard, secondCard;
-  const gameBoard = document.getElementById("game");
   for (let color of colors) {
     const card = document.createElement("div");
+    card.classList.add(color)
+    gameBoard.append(card)
     card.addEventListener("click", function (evt) {
-      if (firstCard === undefined && secondCard === undefined) {
-        flipCard(card)
-        firstCard = handleCardClick(evt)
-      } else if (secondCard === undefined) {
-        flipCard(card)
-        secondCard = handleCardClick(evt)
-        if (firstCard.className !== secondCard.className) {
+      if (FIRSTCARD === undefined && SECONDCARD === undefined) {
+        FIRSTCARD = handleCardClick(evt)
+      } else if (SECONDCARD === undefined && FIRSTCARD !== card) {
+        SECONDCARD = handleCardClick(evt)
+        if (FIRSTCARD.className !== SECONDCARD.className) {
           setTimeout(() => {
-            unFlipCard(firstCard);
-            unFlipCard(secondCard);
-            firstCard = undefined;
-            secondCard = undefined;
-          }, 1000) 
+            unFlipCard(FIRSTCARD);
+            unFlipCard(SECONDCARD);
+            cardReset();
+          }, FOUND_MATCH_WAIT_MSECS)
         } else {
-          firstCard = undefined;
-          secondCard = undefined;
+          matches()
         }
       }
     })
-
-
-    card.classList.add(color)
-    gameBoard.append(card)
   }
 }
 
 /** Flip a card face-up. */
 
 function flipCard(card) {
+  score.innerText = ++SCORE;
   card.style.backgroundColor = card.className;
 }
 
@@ -85,6 +99,30 @@ function unFlipCard(card) {
 /** Handle clicking on a card: this could be first-card or second-card. */
 
 function handleCardClick(evt) {
+  flipCard(evt.target)
   return evt.target
 }
 
+/** reset the two cards to player selected */
+function cardReset() {
+  FIRSTCARD = undefined;
+  SECONDCARD = undefined;
+}
+
+function matches() {
+  MATCHES += 2
+  if (MATCHES === COLORS.length) {
+    console.log("you win!")
+    body.append(resetBtn)
+  }
+  cardReset()
+}
+
+function reset() {
+  body.append(startBtn)
+  gameBoard.innerHTML = ""
+  SCORE = 0;
+  MATCHES = 0;
+  score.innerText = SCORE;
+  resetBtn.remove();
+}
