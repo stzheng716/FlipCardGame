@@ -4,51 +4,48 @@
 
 const FOUND_MATCH_WAIT_MSECS = 1000;
 const numOfPairs = 12;
-const bestScore = localStorage.getItem("Best Score")
 let SCORE = 0;
 let MATCHES = 0;
 
 const newDeck = [];
+for (let i = 0; i < numOfPairs; i++) {
+  newDeck.push(`img/card${i}.png`, `img/card${i}.png`)
+}
+
+const bestScore = localStorage.getItem("Best Score")
+const score = document.createElement("h2");
 const colors = shuffle(newDeck);
 const startBtn = document.querySelector("#start");
 const resetBtn = document.createElement("button");
+resetBtn.innerText = "PLAY AGAIN"
 const gameOverMsg = document.createElement("p");
-resetBtn.innerText = "RESET"
 const body = document.querySelector("body");
 const gameBoard = document.getElementById("game");
-const score = document.createElement("h2");
 const gameName = document.querySelector("h1");
-const topScore = document.querySelector("#topScore");
+const topScoreNum = document.querySelector("#topScore");
 const topScoreEl = document.querySelector("#topScoreEl");
 
+/* sets the best score on start screen **/
 if (bestScore) {
-  topScore.innerHTML = bestScore;
+  topScoreNum.innerHTML = bestScore;
 }
 
 startBtn.addEventListener("click", function () {
-  gameBoard.append(score)
-  score.innerText = SCORE;
-  createCards(colors);
+  startGame();
   gameName.remove();
   topScoreEl.remove();
-  this.remove();
+  startBtn.remove();
 })
 
 resetBtn.addEventListener("click", function () {
   gameBoard.innerHTML = "";
-  shuffle(newDeck);
   SCORE = 0;
   MATCHES = 0;
-  score.innerText = SCORE;
-  gameBoard.append(score)
-  resetBtn.remove();
+  startGame();
   gameOverMsg.remove();
-  createCards(colors);
+  resetBtn.remove();
 })
 
-for (let i = 0; i < numOfPairs; i++) {
-  newDeck.push(`img/card${i}.png`, `img/card${i}.png`)
-}
 
 
 /** Shuffle array items in-place and return shuffled array. */
@@ -63,7 +60,6 @@ function shuffle(items) {
   return items;
 }
 
-shuffle(newDeck);
 
 /** Create card for every color in colors (each will appear twice)
  *
@@ -78,22 +74,22 @@ function createCards(colors) {
   for (let color of colors) {
     const card = document.createElement("div");
     card.style.backgroundImage = `url("img/back.png")`;
-    card.classList.add(color)
-    gameBoard.append(card)
+    card.classList.add(color);
+    gameBoard.append(card);
     card.addEventListener("click", function (evt) {
       if (FIRSTCARD === undefined && SECONDCARD === undefined && !card.className.includes('flipped')) {
-        FIRSTCARD = handleCardClick(evt)
+        FIRSTCARD = handleCardClick(evt);
       } else if (SECONDCARD === undefined && FIRSTCARD !== card && !card.className.includes('flipped')) {
-        SECONDCARD = handleCardClick(evt)
+        SECONDCARD = handleCardClick(evt);
         if (FIRSTCARD.className !== SECONDCARD.className) {
-          setTimeout(() => {
+          setTimeout(function() {
             unFlipCard(FIRSTCARD);
             unFlipCard(SECONDCARD);
             cardReset();
-          }, FOUND_MATCH_WAIT_MSECS)
+          }, FOUND_MATCH_WAIT_MSECS);
         } else {
-          matches()
-        }
+          matches();
+        }0
       }
     })
   }
@@ -102,16 +98,15 @@ function createCards(colors) {
 /** Flip a card face-up. */
 
 function flipCard(card) {
-
   score.innerText = ++SCORE;
   card.style.backgroundImage = `url("${card.className}")`;
-  card.classList.toggle('flipped')
+  card.classList.toggle('flipped');
 }
 
 /** Flip a card face-down. */
 
 function unFlipCard(card) {
-  card.classList.toggle('flipped')
+  card.classList.toggle('flipped');
   card.style.backgroundImage = `url("img/back.png")`;
   // card.style.backgroundColor = 'white'
 }
@@ -129,14 +124,24 @@ function cardReset() {
   SECONDCARD = undefined;
 }
 
+/** place cards to the gameboard and resets the game */
+function startGame() {
+  gameBoard.append(score)
+  score.innerText = SCORE;
+  shuffle(newDeck);
+  createCards(colors);
+}
 
+/** determine if all cards are flipped and if its a new best score */
 function matches() {
   MATCHES += 2
   if (MATCHES === newDeck.length) {
     if (SCORE < bestScore || bestScore === null) {
       localStorage.setItem("Best Score", SCORE)
+      gameOverMsg.innerText = `NEW BEST SCORE ${SCORE}`
+    } else {
+      gameOverMsg.innerText = `Your score was ${SCORE}, the best score was ${bestScore}`
     }
-    gameOverMsg.innerText = `Your score was ${SCORE}, the best score was ${bestScore}`
     body.append(gameOverMsg)
     const resetDiv = document.createElement("div");
     resetDiv.append(resetBtn)
@@ -147,19 +152,4 @@ function matches() {
 
 
 //TODO LIST
-
-//add game name back at reset?
-//add score back once reset button is pressed
 //deploy the add on aws S3
-
-
-// const COLORS = [
-//   "red", "blue", "green", "orange", "purple", "black", "yellow"
-// ];
-
-// function randomRGB(){
-//   const r = Math.floor(Math.random() * 256)
-//   const g = Math.floor(Math.random() * 256)
-//   const b = Math.floor(Math.random() * 256)
-//   return `rgb(${r},${g},${b})`
-// }
