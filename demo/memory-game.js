@@ -7,19 +7,19 @@ const FOUND_MATCH_WAIT_MSECS = 1000;
 //   "red", "blue", "green", "orange", "purple", "black", "yellow"
 // ];
 
-function randomRGB(){
-  const r = Math.floor(Math.random() * 256)
-  const g = Math.floor(Math.random() * 256)
-  const b = Math.floor(Math.random() * 256)
-  return `rgb(${r},${g},${b})`
-}
+// function randomRGB(){
+//   const r = Math.floor(Math.random() * 256)
+//   const g = Math.floor(Math.random() * 256)
+//   const b = Math.floor(Math.random() * 256)
+//   return `rgb(${r},${g},${b})`
+// }
 
-const numOfCards = 15;
+const numOfCards = 1;
 
 const newDeck = [];
 for(let i = 0; i < numOfCards; i++){
-  let randomColor = randomRGB()
-  newDeck.push(randomColor, randomColor)
+  // let random = randomRGB()
+  newDeck.push(`img/card${i}.png`, `img/card${i}.png`)
 }
 
 const colors = shuffle(newDeck);
@@ -78,6 +78,7 @@ let FIRSTCARD, SECONDCARD;
 function createCards(colors) {
   for (let color of colors) {
     const card = document.createElement("div");
+    card.style.backgroundImage = `url("img/back.png")`;
     card.classList.add(color)
     gameBoard.append(card)
     card.addEventListener("click", function (evt) {
@@ -102,8 +103,9 @@ function createCards(colors) {
 /** Flip a card face-up. */
 
 function flipCard(card) {
+
   score.innerText = ++SCORE;
-  card.style.backgroundColor = card.className;
+  card.style.backgroundImage = `url("${card.className}")`;
   card.classList.toggle('flipped')
 }
 
@@ -111,7 +113,8 @@ function flipCard(card) {
 
 function unFlipCard(card) {
   card.classList.toggle('flipped')
-  card.style.backgroundColor = 'white'
+  card.style.backgroundImage = `url("img/back.png")`;
+  // card.style.backgroundColor = 'white'
 }
 
 /** Handle clicking on a card: this could be first-card or second-card. */
@@ -143,7 +146,9 @@ function matches() {
 
 function reset() {
   body.append(startBtn)
+
   gameBoard.innerHTML = ""
+  shuffle(newDeck)
   SCORE = 0;
   MATCHES = 0;
   score.innerText = SCORE;

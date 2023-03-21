@@ -1,9 +1,42 @@
 /* you can add to or change this. */
 
+h1{ 
+  font-family: montserrat, sans-serif;
+}
+
+body {
+  height: 100vh;
+  background-image: linear-gradient(90deg, #6096B4,#93BFCF,#BDCDD6,#EEE9DA 80%);
+  text-align: center;
+}
+
 #game div {
-  border: 1px solid black;
-  width: 100px;
-  height: 100px;
+  border: 10px solid white;
+  width: 129px;
+  height: 200px;
   margin: 20px;
   display: inline-block;
+  border-radius: 10px;
+  position: relative;
+  transition: all 700ms ease;
+  transform-style: preserve-3d;
+  perspective: 800px;
+}
+
+#game .flipped {
+  transform: rotateY(-180deg);
+}
+
+button {
+  background-color: #408E91;
+  border: 1px solid white;
+  color: white;
+  padding: 15px 28px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #245953;
 }
