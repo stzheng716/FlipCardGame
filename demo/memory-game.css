@@ -1,20 +1,36 @@
 /* you can add to or change this. */
 
 h1{ 
-  font-family: montserrat, sans-serif;
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 8rem;
+  margin-bottom: 50px;
+}
+
+h2{
+  font-family: 'Press Start 2P', cursive;
+  font-size: 3rem;
+  margin-bottom: 50px;
 }
 
 body {
-  height: 100vh;
+  height: 125vh;
   background-image: linear-gradient(90deg, #6096B4,#93BFCF,#BDCDD6,#EEE9DA 80%);
   text-align: center;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+p {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 3rem;
 }
 
 #game div {
   border: 10px solid white;
   width: 129px;
   height: 200px;
-  margin: 20px;
+  margin: 10px;
   display: inline-block;
   border-radius: 10px;
   position: relative;
@@ -35,6 +51,8 @@ button {
   text-align: center;
   text-decoration: none;
   font-size: 16px;
+  display: inline-block;
+  margin-top: 0;
 }
 
 button:hover {
